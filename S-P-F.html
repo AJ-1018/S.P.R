@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>SPR Encoder/Decoder</title>
+	<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=" rel="icon" />
+</head>
+<body><br />
+<style type="text/css">:root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --danger: #f72585;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+        
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 25px;
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            color: #aaa;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+        
+        textarea, input, select {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 2px solid #333;
+            background: rgba(30, 30, 40, 0.8);
+            color: var(--light);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        textarea:focus, input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .shift-control {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .shift-control input {
+            flex: 1;
+        }
+        
+        .action-group {
+            display: flex;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        button {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .encode-btn {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+        }
+        
+        .decode-btn {
+            background: linear-gradient(45deg, var(--secondary), #560bad);
+            color: white;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .result-container {
+            background: rgba(30, 30, 40, 0.6);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid #444;
+        }
+        
+        .result-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .result-title h3 {
+            color: var(--success);
+        }
+        
+        .copy-btn {
+            background: rgba(60, 60, 80, 0.8);
+            color: var(--light);
+            border: 1px solid #555;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(80, 80, 100, 0.8);
+        }
+        
+        .result {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            min-height: 60px;
+            word-break: break-all;
+        }
+        
+        .examples {
+            margin-top: 30px;
+            background: rgba(30, 30, 40, 0.4);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px dashed #555;
+        }
+        
+        .examples h3 {
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+        
+        .example-item {
+            margin-bottom: 10px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+        
+        .example-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 0.9rem;
+            border-top: 1px solid #333;
+            background: rgba(0, 0, 0, 0.8);
+        }
+        
+        @media (max-width: 600px) {
+            .action-group {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                border-radius: 15px;
+            }
+        }
+</style>
+<div class="container">
+<header>
+<h1>SPR Encoder/Decoder</h1>
+
+<p class="subtitle">Shifted Paired Reversal (SPR) - A simple yet secure encoding method that combines shifting, pairing, and reversal</p>
+</header>
+
+<div class="content">
+<div class="input-group"><label for="text-input">Enter your message:</label><textarea id="text-input" placeholder="Type your message here..."></textarea></div>
+
+<div class="input-group"><label for="shift-input">Shift Value (1-25):</label>
+
+<div class="shift-control"><input id="shift-slider" max="25" min="1" type="range" value="10" /> <input id="shift-input" max="25" min="1" type="number" value="10" /></div>
+</div>
+
+<div class="action-group"><button class="encode-btn" id="encode-btn">Encode Message</button><button class="decode-btn" id="decode-btn">Decode Message</button></div>
+
+<div class="result-container">
+<div class="result-title">
+<h3>Result</h3>
+</div>
+
+<div class="result" id="result">Your result will appear here...</div>
+</div>
+
+<div class="examples">
+<h3>Examples to Try:</h3>
+
+<div class="example-item"><strong>Encode &quot;Hello&quot; (shift=10):</strong> <span class="example-result">YVVR&nbsp;</span></div>
+
+<div class="example-item"><strong>Encode &quot;Secret&quot; (shift=10):</strong> <span class="example-result">ODMBCO</span></div>
+
+<div class="example-item"><strong>Decode &quot;YVVR O&quot; (shift=10):</strong> <span class="example-result">HELLO</span></div>
+
+<div class="example-item"><strong>Decode &quot;OQCU&quot; (shift=10):</strong> <span class="example-result">TEST</span></div>
+</div>
+</div>
+
+<footer>
+<p>SPR Encoding Method: Shift &rarr; Pair/Swap &rarr; Reverse | Designed for secure messaging</p>
+</footer>
+</div>
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get DOM elements
+            const textInput = document.getElementById('text-input');
+            const shiftInput = document.getElementById('shift-input');
+            const shiftSlider = document.getElementById('shift-slider');
+            const encodeBtn = document.getElementById('encode-btn');
+            const decodeBtn = document.getElementById('decode-btn');
+            const resultDiv = document.getElementById('result');
+            const copyBtn = document.getElementById('copy-btn');
+            
+            // Sync shift inputs
+            shiftInput.addEventListener('input', function() {
+                let value = parseInt(shiftInput.value);
+                if (value < 1) value = 1;
+                if (value > 25) value = 25;
+                shiftInput.value = value;
+                shiftSlider.value = value;
+            });
+            
+            shiftSlider.addEventListener('input', function() {
+                shiftInput.value = shiftSlider.value;
+            });
+            
+            // SPR Encoding function
+            function spr_encode(text, shift) {
+                // Step 1: Shift letters forward
+                let shifted = '';
+                for (let char of text) {
+                    if (/[a-z]/i.test(char)) {
+                        const base = char === char.toUpperCase() ? 65 : 97;
+                        const code = char.charCodeAt(0) - base;
+                        const shiftedCode = (code + shift) % 26;
+                        shifted += String.fromCharCode(shiftedCode + base);
+                    } else {
+                        shifted += char;
+                    }
+                }
+                
+                // Step 2: Pair and swap
+                const chars = shifted.split('');
+                for (let i = 0; i < chars.length - 1; i += 2) {
+                    [chars[i], chars[i+1]] = [chars[i+1], chars[i]];
+                }
+                const paired = chars.join('');
+                
+                // Step 3: Reverse entire string
+                return paired.split('').reverse().join('');
+            }
+            
+            // SPR Decoding function
+            function spr_decode(text, shift) {
+                // Reverse Step 3: Undo reversal
+                const reversed = text.split('').reverse().join('');
+                
+                // Reverse Step 2: Unswap pairs
+                const chars = reversed.split('');
+                for (let i = 0; i < chars.length - 1; i += 2) {
+                    [chars[i], chars[i+1]] = [chars[i+1], chars[i]];
+                }
+                const unswapped = chars.join('');
+                
+                // Reverse Step 1: Shift backward
+                let result = '';
+                for (let char of unswapped) {
+                    if (/[a-z]/i.test(char)) {
+                        const base = char === char.toUpperCase() ? 65 : 97;
+                        const code = char.charCodeAt(0) - base;
+                        // Handle negative modulo for backward shift
+                        const shiftedCode = (code - shift + 26) % 26;
+                        result += String.fromCharCode(shiftedCode + base);
+                    } else {
+                        result += char;
+                    }
+                }
+                
+                return result;
+            }
+            
+            // Encode button event
+            encodeBtn.addEventListener('click', function() {
+                const text = textInput.value;
+                const shift = parseInt(shiftInput.value);
+                const encoded = spr_encode(text, shift);
+                resultDiv.textContent = encoded;
+            });
+            
+            // Decode button event
+            decodeBtn.addEventListener('click', function() {
+                const text = textInput.value;
+                const shift = parseInt(shiftInput.value);
+                const decoded = spr_decode(text, shift);
+                resultDiv.textContent = decoded;
+            });
+            
+            // Copy to clipboard
+            copyBtn.addEventListener('click', function() {
+                const text = resultDiv.textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    const originalText = copyBtn.textContent;
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyBtn.textContent = originalText;
+                    }, 2000);
+                });
+            });
+            
+            // Initialize with an example
+            const example = spr_encode("Secret Message", 10);
+            resultDiv.textContent = example;
+        });
+    </script></body>
+</html>
